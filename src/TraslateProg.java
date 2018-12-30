@@ -6,28 +6,29 @@ import java.io.FileReader;
 import java.util.Scanner;
 
 public class TraslateProg {
+
     public static void main(String[] args) throws FileNotFoundException {
-        String translation;
-        String line;
-        String[] rus = new String[100];
-        File filePAth = new File("/home/yarik/IdeaProjects/Practice/TextFile.txt"); // файл со словарём в формате слово(Rus)-слово(Eng)
+
+        String[] translationArray = new String[100];
+        File filePAth = new File("TextFile.txt"); // файл со словарём
+        // в формате слово(Rus)-слово(Eng)
         Scanner read = new Scanner(new FileReader(filePAth));
-        translation = EnterWord(); // Задаём слово на русском
+        String translation = enterWord(); // Задаём слово на русском
         while (read.hasNextLine()) {
-            line = read.nextLine();
-            rus = line.split("-");
-            if (rus[0].equalsIgnoreCase(translation)) {
-                System.out.println("Translation is :" + rus[1]);
+            String line = read.nextLine();
+            translationArray = line.split("-");
+            if (translationArray[0].equalsIgnoreCase(translation)) {
+                System.out.println("Translation is :" + translationArray[1]);
                 break;
             }
         }
     }
-    static public String EnterWord() {
+
+    static public String enterWord() {
         String word;
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter a word for translation from Russia to English");
         word = scanner.nextLine();
         return word;
-
     }
 }
