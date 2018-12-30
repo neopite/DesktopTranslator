@@ -9,7 +9,6 @@ public class TraslateProg {
     public static void main(String[] args) throws FileNotFoundException {
         String translation;
         String line;
-        String rus1;
         String[] rus = new String[100];
         File filePAth = new File("/home/yarik/IdeaProjects/Practice/TextFile.txt"); // файл со словарём в формате слово(Rus)-слово(Eng)
         Scanner read = new Scanner(new FileReader(filePAth));
@@ -23,7 +22,6 @@ public class TraslateProg {
             }
         }
     }
-
     static public String EnterWord() {
         String word;
         Scanner scanner = new Scanner(System.in);
