@@ -2,12 +2,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class ModifTranslater {
+    final static ArrayList<ArrayList<String>> LIST = new ArrayList<>();
+
     public static void main(String[] args) throws FileNotFoundException {
+        final ArrayList<String> ENG = listOfWords("Eng");
+        final ArrayList<String> RUS = listOfWords("Rus");
+        final ArrayList<String> UA = listOfWords("Ua");
+        LIST.add(0, ENG);
+        LIST.add(1, RUS);
+        LIST.add(2, UA);
         String firstLanguage = "";
         ArrayList<String> lines = new ArrayList<>();
         lines.add("Eng");
@@ -23,7 +29,7 @@ public class ModifTranslater {
         } else if (languageDetection(sentence, lines).equalsIgnoreCase("Eng")) {
             firstLanguage = languageDetection(sentence, lines);
         }
-        System.out.println("Detected language : "+firstLanguage);
+        System.out.println("Detected language : " + firstLanguage);
         System.out.println("To which Language translate");
         String secondLanguage = write.nextLine();
         if (!lines.contains(firstLanguage)) {
@@ -120,39 +126,52 @@ public class ModifTranslater {
     }
 
     public static String languageDetection(String sentence, ArrayList<String> listOfLanguages) throws FileNotFoundException {
-        int rus = 0;
-        int ua = 0;
-        int eng = 0;
-        int count = 0;
+        HashMap<String, Integer> list = new HashMap<>();
+        HashMap<Integer, String> numbersOfLanguages = new HashMap<>();
+        numbersOfLanguages.put(0, "Eng");
+        numbersOfLanguages.put(1, "Rus");
+        numbersOfLanguages.put(2, "Ua");
+        list.put("Rus", 0);
+        list.put("Eng", 0);
+        list.put("Ua", 0);
         for (String word : sentence.split(" ")) {
-            for (String language : listOfLanguages) {
-                for (int x = 0; x < listOfWords(language).size(); x++) {
-                    if (word.contains(listOfWords(language).get(x))) {
-                        if (language.contains("Rus")) {
-                            rus++;
-                        } else if (language.contains("Eng")) {
-                            eng++;
-                        } else if (language.contains("Ua")) {
-                            ua++;
+            for (int x = 0; x < LIST.size(); x++) {
+                for (int z = 0; z < 10; z++) {
+                    if (word.equalsIgnoreCase((LIST.get(x).get(z)))) {
+                        int count;
+                        if (numbersOfLanguages.get(x).contains("Rus")) {
+                            count = list.get("Rus");
+                            list.put("Rus", count + 1);
+
+                        } else if (numbersOfLanguages.get(x).contains("Eng")) {
+                            count = list.get("Eng");
+                            list.put("Eng", count + 1);
+
+                        } else if (numbersOfLanguages.get(x).contains("Ua")) {
+                            count = list.get("Ua");
+                            list.put("Ua", count + 1);
+
                         }
                     }
                 }
 
             }
         }
-        String max = "";
-        if (eng < rus && ua < rus) {
-            max = "Rus";
-        } else if (eng < ua && rus < ua) {
-            max = "Ua";
-        } else if (rus < eng && ua < eng) {
-            max = "Eng";
+        String language = "";
+        int maxValueInMap = (Collections.max(list.values()));
+        for (Map.Entry<String, Integer> entry : list.entrySet()) {
+            if (entry.getValue() == maxValueInMap) {
+                language = entry.getKey();
+            }
         }
-        return max;
+
+        return language;
 
     }
 
+
 }
+
 
 
 
