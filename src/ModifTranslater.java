@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -8,12 +7,7 @@ public class ModifTranslater {
     final static ArrayList<ArrayList<String>> LIST = new ArrayList<>();
 
     public static void main(String[] args) throws FileNotFoundException {
-        final ArrayList<String> ENG = listOfWords("Eng");
-        final ArrayList<String> RUS = listOfWords("Rus");
-        final ArrayList<String> UA = listOfWords("Ua");
-        LIST.add(0, ENG);
-        LIST.add(1, RUS);
-        LIST.add(2, UA);
+        PUT_VOCABULARS();
         String firstLanguage = "";
         ArrayList<String> lines = new ArrayList<>();
         lines.add("Eng");
@@ -22,12 +16,12 @@ public class ModifTranslater {
         Scanner write = new Scanner(System.in);
         System.out.println("Enter sentence: ");
         String sentence = write.nextLine();
-        if (languageDetection(sentence, lines).equalsIgnoreCase("Rus")) {
-            firstLanguage = languageDetection(sentence, lines);
-        } else if (languageDetection(sentence, lines).equalsIgnoreCase("Ua")) {
-            firstLanguage = languageDetection(sentence, lines);
-        } else if (languageDetection(sentence, lines).equalsIgnoreCase("Eng")) {
-            firstLanguage = languageDetection(sentence, lines);
+        if (languageDetection(sentence,putAListOFLanguages()).equalsIgnoreCase("Rus")) {
+            firstLanguage = languageDetection(sentence,putAListOFLanguages());
+        } else if (languageDetection(sentence,putAListOFLanguages()).equalsIgnoreCase("Ua")) {
+            firstLanguage = languageDetection(sentence,putAListOFLanguages());
+        } else if (languageDetection(sentence,putAListOFLanguages()).equalsIgnoreCase("Eng")) {
+            firstLanguage = languageDetection(sentence,putAListOFLanguages());
         }
         System.out.println("Detected language : " + firstLanguage);
         System.out.println("To which Language translate");
@@ -125,18 +119,14 @@ public class ModifTranslater {
         return listOFword;
     }
 
-    public static String languageDetection(String sentence, ArrayList<String> listOfLanguages) throws FileNotFoundException {
+    public static String languageDetection(String sentence,HashMap<Integer,String> numbersOfLanguages) throws FileNotFoundException {
         HashMap<String, Integer> list = new HashMap<>();
-        HashMap<Integer, String> numbersOfLanguages = new HashMap<>();
-        numbersOfLanguages.put(0, "Eng");
-        numbersOfLanguages.put(1, "Rus");
-        numbersOfLanguages.put(2, "Ua");
         list.put("Rus", 0);
         list.put("Eng", 0);
         list.put("Ua", 0);
         for (String word : sentence.split(" ")) {
             for (int x = 0; x < LIST.size(); x++) {
-                for (int z = 0; z < 10; z++) {
+                for (int z = 0; z < findSizeOfVocab(numbersOfLanguages.get(x)); z++) {
                     if (word.equalsIgnoreCase((LIST.get(x).get(z)))) {
                         int count;
                         if (numbersOfLanguages.get(x).contains("Rus")) {
@@ -169,9 +159,33 @@ public class ModifTranslater {
 
     }
 
+    public static int findSizeOfVocab(String language) throws FileNotFoundException {
+        int count = 0;
+        File file = new File(language);
+        Scanner read = new Scanner(new FileReader(file));
+        while (read.hasNext()) {
+            String line = read.nextLine();
+            count++;
+        }
+        return count;
+    }
+    public final static void PUT_VOCABULARS()throws FileNotFoundException{
+        final ArrayList<String> ENG = listOfWords("Eng");
+        final ArrayList<String> RUS = listOfWords("Rus");
+        final ArrayList<String> UA = listOfWords("Ua");
+        LIST.add(0, ENG);
+        LIST.add(1, RUS);
+        LIST.add(2, UA);
+    }
+    public  static HashMap<Integer,String>  putAListOFLanguages(){
+        HashMap<Integer, String> numbersOfLanguages = new HashMap<>();
+        numbersOfLanguages.put(0, "Eng");
+        numbersOfLanguages.put(1, "Rus");
+        numbersOfLanguages.put(2, "Ua");
+        return numbersOfLanguages;
+    }
 
 }
-
 
 
 
