@@ -5,6 +5,7 @@ import java.util.*;
 
 public class ModifTranslater {
     final static ArrayList<ArrayList<String>> LIST = new ArrayList<>();
+    final static HashMap<String, Integer> LIST_OF_LANGUAGES = new HashMap<>();
 
     public static void main(String[] args) throws FileNotFoundException {
         PUT_VOCABULARS();
@@ -16,12 +17,12 @@ public class ModifTranslater {
         Scanner write = new Scanner(System.in);
         System.out.println("Enter sentence: ");
         String sentence = write.nextLine();
-        if (languageDetection(sentence,putAListOFLanguages()).equalsIgnoreCase("Rus")) {
-            firstLanguage = languageDetection(sentence,putAListOFLanguages());
-        } else if (languageDetection(sentence,putAListOFLanguages()).equalsIgnoreCase("Ua")) {
-            firstLanguage = languageDetection(sentence,putAListOFLanguages());
-        } else if (languageDetection(sentence,putAListOFLanguages()).equalsIgnoreCase("Eng")) {
-            firstLanguage = languageDetection(sentence,putAListOFLanguages());
+        if (languageDetection(sentence, putAListOFLanguages(), LIST_OF_LANGUAGES).equalsIgnoreCase("Rus")) {
+            firstLanguage = languageDetection(sentence, putAListOFLanguages(), LIST_OF_LANGUAGES);
+        } else if (languageDetection(sentence, putAListOFLanguages(), LIST_OF_LANGUAGES).equalsIgnoreCase("Ua")) {
+            firstLanguage = languageDetection(sentence, putAListOFLanguages(), LIST_OF_LANGUAGES);
+        } else if (languageDetection(sentence, putAListOFLanguages(), LIST_OF_LANGUAGES).equalsIgnoreCase("Eng")) {
+            firstLanguage = languageDetection(sentence, putAListOFLanguages(), LIST_OF_LANGUAGES);
         }
         System.out.println("Detected language : " + firstLanguage);
         System.out.println("To which Language translate");
@@ -119,37 +120,23 @@ public class ModifTranslater {
         return listOFword;
     }
 
-    public static String languageDetection(String sentence,HashMap<Integer,String> numbersOfLanguages) throws FileNotFoundException {
-        HashMap<String, Integer> list = new HashMap<>();
-        list.put("Rus", 0);
-        list.put("Eng", 0);
-        list.put("Ua", 0);
+    public static String languageDetection(String sentence, HashMap<Integer, String> numbersOfLanguages,
+                                           HashMap<String, Integer> list) throws FileNotFoundException {
         for (String word : sentence.split(" ")) {
             for (int x = 0; x < LIST.size(); x++) {
                 for (int z = 0; z < findSizeOfVocab(numbersOfLanguages.get(x)); z++) {
                     if (word.equalsIgnoreCase((LIST.get(x).get(z)))) {
-                        int count;
-                        if (numbersOfLanguages.get(x).contains("Rus")) {
-                            count = list.get("Rus");
-                            list.put("Rus", count + 1);
-
-                        } else if (numbersOfLanguages.get(x).contains("Eng")) {
-                            count = list.get("Eng");
-                            list.put("Eng", count + 1);
-
-                        } else if (numbersOfLanguages.get(x).contains("Ua")) {
-                            count = list.get("Ua");
-                            list.put("Ua", count + 1);
-
-                        }
+                        findLanguageForTranslation(putAListOFLanguages(), x, "Rus", LIST_OF_LANGUAGES);
+                        findLanguageForTranslation(putAListOFLanguages(), x, "Eng", LIST_OF_LANGUAGES);
+                        findLanguageForTranslation(putAListOFLanguages(), x, "Ua", LIST_OF_LANGUAGES);
                     }
                 }
 
             }
         }
         String language = "";
-        int maxValueInMap = (Collections.max(list.values()));
-        for (Map.Entry<String, Integer> entry : list.entrySet()) {
+        int maxValueInMap = (Collections.max(LIST_OF_LANGUAGES.values()));
+        for (Map.Entry<String, Integer> entry : LIST_OF_LANGUAGES.entrySet()) {
             if (entry.getValue() == maxValueInMap) {
                 language = entry.getKey();
             }
@@ -169,15 +156,21 @@ public class ModifTranslater {
         }
         return count;
     }
-    public final static void PUT_VOCABULARS()throws FileNotFoundException{
+
+    public final static void PUT_VOCABULARS() throws FileNotFoundException {
         final ArrayList<String> ENG = listOfWords("Eng");
         final ArrayList<String> RUS = listOfWords("Rus");
         final ArrayList<String> UA = listOfWords("Ua");
         LIST.add(0, ENG);
         LIST.add(1, RUS);
         LIST.add(2, UA);
+        LIST_OF_LANGUAGES.put("Rus", 0);
+        LIST_OF_LANGUAGES.put("Eng", 0);
+        LIST_OF_LANGUAGES.put("Ua", 0);
+
     }
-    public  static HashMap<Integer,String>  putAListOFLanguages(){
+
+    public static HashMap<Integer, String> putAListOFLanguages() {
         HashMap<Integer, String> numbersOfLanguages = new HashMap<>();
         numbersOfLanguages.put(0, "Eng");
         numbersOfLanguages.put(1, "Rus");
@@ -185,8 +178,12 @@ public class ModifTranslater {
         return numbersOfLanguages;
     }
 
+    public static HashMap<String, Integer> findLanguageForTranslation(HashMap<Integer, String> map, int number,   //Не знаю,но думаю что я немного наблизился к тому что ты говорил(но это не точно)
+                                                                      String comparableLanguage, HashMap<String, Integer> list) {
+        if (map.get(number).contains(comparableLanguage)) {
+            int count = list.get(comparableLanguage);
+            list.put(comparableLanguage, count + 1);
+        }
+        return list;
+    }
 }
-
-
-
-
