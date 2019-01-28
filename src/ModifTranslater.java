@@ -8,6 +8,8 @@ public class ModifTranslater {
     final static HashMap<String, HashMap<String, String>> DICTIONARY_LOAD = new HashMap<>();
     final static HashMap<String, HashMap<String, String>> DICTIONARY_LOAD_TO = new HashMap<>();
     static String firstLanguage;
+    public static String outputTextFile="TextOutput";
+    public static String textFile="TextInput";
 
     public static void main(String[] args) {
         putVocabularsAndDictionary();
@@ -23,7 +25,7 @@ public class ModifTranslater {
                 vocabular.put(lineArray[0], lineArray[1]);
             }
         } catch (FileNotFoundException error) {
-            System.out.println("File(" + file + ") not found,please try again");
+            System.err.println("File(" + file + ") not found,please try again");
             System.exit(-1);
         }
         return vocabular;
@@ -38,7 +40,7 @@ public class ModifTranslater {
                 vocabular.put(lineArray[1], lineArray[0]);
             }
         } catch (FileNotFoundException error) {
-            System.out.println("File(" + file + ") not found,please try again");
+            System.err.println("File(" + file + ") not found,please try again");
             System.exit(-1);
         }
         return vocabular;
@@ -69,7 +71,7 @@ public class ModifTranslater {
                 words += DICTIONARY_LOAD_TO.get(lang).get(line) + " ";
             }
         } catch (NullPointerException error) {
-            System.out.println("Language(" + lang + ")is nще contained in dictionaries");
+            System.err.println("Language(" + lang + ")is not contained in dictionaries");
             System.exit(-1);
         }
         return words;
@@ -110,7 +112,7 @@ public class ModifTranslater {
                 count++;
             }
         } catch (FileNotFoundException error) {
-            System.out.println("File(" + file + ") not found,please try again");
+            System.err.println("File(" + file + ") not found,please try again");
             System.exit(-1);
         }
         return count;
@@ -179,7 +181,7 @@ public class ModifTranslater {
                 }
             }
         } catch (FileNotFoundException error) {
-            System.out.println("File(" + language + ") not found,please try again");
+            System.err.println("File(" + language + ") not found,please try again");
             System.exit(-1);
         }
         return listOfWord;
@@ -192,13 +194,12 @@ public class ModifTranslater {
         try (Scanner read = new Scanner(new FileReader(file))) {
             while (read.hasNextLine()) {
                 String line = read.nextLine();
-                String[] arrayOfWords = line.split(";");
+                String[] arrayOfWords = line.split(";"); //separator between language and sentence in TextInput.txt
                 array.add(count, arrayOfWords[1]);
                 count++;
-
             }
         } catch (FileNotFoundException error) {
-            System.out.println("File" + file + "not found,please try again");
+            System.err.println("File" + file + "not found,please try again");
             System.exit(-1);
         }
         return array;
@@ -215,29 +216,29 @@ public class ModifTranslater {
                 count++;
             }
         } catch (FileNotFoundException error) {
-            System.out.println("File" + file + "not found,please try again");
+            System.err.println("File" + file + "not found,please try again");
             System.exit(-1);
         }
 
         return array;
     }
 
-    public static ArrayList<String> translateText(ArrayList<String> array, ArrayList<String> reputArray) {
+    public static ArrayList<String> translateText(ArrayList<String> arrayOfTextLines, ArrayList<String> reputArrayOfTextLines) {
         int count = 0;
         String text;
         ArrayList<String> listOfWords = new ArrayList<>();
-        for (int x = 0; x < findSizeOfVocab("TextInput"); x++) {
-            firstLanguage = languageDetection(array.get(x));
-            System.out.println(array.get(x) + " " + firstLanguage);
+        for (int x = 0; x < findSizeOfVocab(textFile); x++) {
+            firstLanguage = languageDetection(arrayOfTextLines.get(x));
+            System.out.println(arrayOfTextLines.get(x) + " " + firstLanguage);
             while (true) {
                 if (firstLanguage.equalsIgnoreCase("Eng")) {
-                    text = translateFromEnglish(array.get(x), reputArray.get(x));
+                    text = translateFromEnglish(arrayOfTextLines.get(x), reputArrayOfTextLines.get(x));
                     break;
-                } else if (reputArray.get(x).equalsIgnoreCase("Eng")) {
-                    text = translateToEnglish(reputArray.get(x), array.get(x));
+                } else if (reputArrayOfTextLines.get(x).equalsIgnoreCase("Eng")) {
+                    text = translateToEnglish(reputArrayOfTextLines.get(x), arrayOfTextLines.get(x));
                     break;
                 } else {
-                    text = translateFromEnglish(translateToEnglish(firstLanguage, array.get(x)), reputArray.get(x));
+                    text = translateFromEnglish(translateToEnglish(firstLanguage, arrayOfTextLines.get(x)), reputArrayOfTextLines.get(x));
                     break;
                 }
             }
@@ -249,24 +250,19 @@ public class ModifTranslater {
     }
 
     public static void putTranslatedTextInOutputFile(ArrayList<String> text) {
-        File file = new File("TextOutput");
+        File file = new File(outputTextFile);
         try (FileWriter writer = new FileWriter(file)) {
-            for (int x = 0; x < findSizeOfVocab("TextInput"); x++) {
+            for (int x = 0; x < findSizeOfVocab(textFile); x++) {
                 writer.write(text.get(x) + "\n");
             }
         } catch (IOException error) {
-            System.out.println("File" + file + "not found");
+            System.err.println("File" + file + "not found");
             System.exit(-1);
         }
     }
 
     public static void makeAChoice() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("What do you want to do?");
-        System.out.println("1:Translate sentence from one language to another");
-        System.out.println("2:Translate text and put translated text to another *.txt");
-        int choice = scanner.nextInt();
-        switch (choice) {
+        switch (enterANumber()) {
             case 1:
                 Scanner write = new Scanner(System.in);
                 System.out.println("Enter sentence: ");
@@ -276,26 +272,34 @@ public class ModifTranslater {
                 System.out.println("To which Language translate");
                 String secondLanguage = write.nextLine();
                 if (!COUNT_OF_LANGUAGES.keySet().contains(firstLanguage)) {
-                    System.out.println("Sorry,it can`t be translated ");
+                    System.err.println("Sorry,it can`t be translated ");
                     System.exit(0);
                 }
                 while (true) {
-                    if (firstLanguage.equalsIgnoreCase("Eng")) {
+                    if (firstLanguage.equalsIgnoreCase( "Eng")) {
                         translateFromEnglish(sentence, secondLanguage);
                         break;
                     }
                     if (secondLanguage.equalsIgnoreCase("Eng")) {
                         translateToEnglish(secondLanguage, sentence);
                         break;
-                    } else
+                    } else {
                         translateFromEnglish(translateToEnglish(firstLanguage, sentence), secondLanguage);
-                    break;
+                        break;
+                    }
                 }
                 break;
             case 2:
-                putTranslatedTextInOutputFile(translateText(putTextInArray("TextInput"), putTextInHashMap("TextInput")));
+                putTranslatedTextInOutputFile(translateText(putTextInArray(textFile), putTextInHashMap(textFile)));
                 break;
-
         }
+    }
+    public static int enterANumber(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("What do you want to do?");
+        System.out.println("1:Translate sentence from one language to another");
+        System.out.println("2:Translate text and put translated text to another *.txt");
+        int choice = scanner.nextInt();
+        return choice;
     }
 }
