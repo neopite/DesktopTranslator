@@ -4,10 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.neophite.Translator.TranslatorApp.LIST_OF_LANGUAGES;
-import static com.github.neophite.Translator.TranslatorApp.findSizeOfVocab;
-import static com.github.neophite.Translator.TranslatorApp.LIST;
-import static com.github.neophite.Translator.TranslatorApp.COUNT_OF_LANGUAGES;
+import static com.github.neophite.Translator.TranslatorApp.*;
 
 public class LanguageGuesser {
     /**
@@ -16,10 +13,10 @@ public class LanguageGuesser {
      * @param sentence -sentence from user.
      * @return language from list(Eng,Rus,Ua,etc).
      */
-    public static String languageDetection(String sentence) {
+    public String languageDetection(String sentence) {
         for (String word : sentence.split(" ")) {
             for (int x = 0; x < LIST.size(); x++) {
-                for (int z = 0; z < findSizeOfVocab(LIST_OF_LANGUAGES.get(x)); z++) {
+                for (int z = 0; z < appTranslator.findSizeOfVocab(LIST_OF_LANGUAGES.get(x)); z++) {
                     if (word.equalsIgnoreCase((LIST.get(x).get(z)))) {
                         findLanguageForTranslation(LIST_OF_LANGUAGES, x, COUNT_OF_LANGUAGES);
                     }
@@ -45,7 +42,7 @@ public class LanguageGuesser {
      * @param list   - counter of each language in COUNT_OF_LANGUAGE.
      * @return update COUNT_OF_LANGUAGE.
      */
-    public static HashMap<String, Integer> findLanguageForTranslation(HashMap<Integer, String> map, int number,
+    public  HashMap<String, Integer> findLanguageForTranslation(HashMap<Integer, String> map, int number,
                                                                       HashMap<String, Integer> list) {
         for (int x = 0; x < LIST_OF_LANGUAGES.size(); x++) {
             if (map.get(number).contains(LIST_OF_LANGUAGES.get(x))) {
