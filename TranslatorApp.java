@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import static com.github.neophite.Translator.TextTranslator.translateFromEnglish;
-import static com.github.neophite.Translator.TextTranslator.translateToEnglish;
-
 public class TranslatorApp {
     public final static ArrayList<ArrayList<String>> LIST = new ArrayList<>();
     public final static HashMap<String, Integer> COUNT_OF_LANGUAGES = new HashMap<>();
@@ -17,13 +14,16 @@ public class TranslatorApp {
     public static String firstLanguage;
     public static String outputTextFile = "TextOutput";
     public static String textFile = "TextInput";
+    public static LanguageGuesser guesser = new LanguageGuesser();
+    public static TranslatorApp appTranslator = new TranslatorApp();
+    public static TextTranslator txtTrans = new TextTranslator();
 
     public static void main(String[] args) {
-        putVocabularsAndDictionary();
-        makeAChoice();
+        appTranslator.putVocabularsAndDictionary();
+        appTranslator.makeAChoice();
     }
 
-    public static void putVocabularsAndDictionary() {
+    public void putVocabularsAndDictionary() {
         final ArrayList<String> ENG = listOfWords("Eng");
         final ArrayList<String> RUS = listOfWords("Rus");
         final ArrayList<String> UA = listOfWords("Ua");
@@ -52,7 +52,7 @@ public class TranslatorApp {
      * @param file - name of the dictionary.
      * @return vocabular - dictionary in HashMap.
      */
-    public static HashMap<String, String> loadDictinory(String file) {
+    public HashMap<String, String> loadDictinory(String file) {
         HashMap<String, String> vocabular = new HashMap<>();
         try (Scanner read = new Scanner(new FileReader(file))) {
             while (read.hasNextLine()) {
@@ -73,7 +73,7 @@ public class TranslatorApp {
      * @param file- name of the dictionary.
      * @return vocabular - dictionary in HashMap.
      */
-    public static HashMap<String, String> loadDictinoryTo(String file) {
+    public HashMap<String, String> loadDictinoryTo(String file) {
         HashMap<String, String> vocabular = new HashMap<>();
         try (Scanner read = new Scanner(new FileReader(file))) {
             while (read.hasNextLine()) {
@@ -88,7 +88,7 @@ public class TranslatorApp {
         return vocabular;
     }
 
-    public static int findSizeOfVocab(String language) {
+    public int findSizeOfVocab(String language) {
         int count = 0;
         File file = new File(language);
         try (Scanner read = new Scanner(new FileReader(file))) {
@@ -103,7 +103,7 @@ public class TranslatorApp {
         return count;
     }
 
-    public static void putNewLanguage() {
+    public void putNewLanguage() {
         Scanner write = new Scanner(System.in);
         System.out.println("Enter new language");
         String language = write.nextLine();
@@ -117,12 +117,12 @@ public class TranslatorApp {
         DICTIONARY_LOAD_TO.put(language, dictionaryToNewLanguage);
     }
 
-    public static ArrayList<String> listOfWords(String language) {
+    public ArrayList<String> listOfWords(String language) {
         ArrayList<String> listOFword = new ArrayList<>();
         return readFile(listOFword, language);
     }
 
-    public static ArrayList<String> readFile(ArrayList<String> listOfWord, String language) {
+    public ArrayList<String> readFile(ArrayList<String> listOfWord, String language) {
         try (Scanner read = new Scanner(new FileReader(language))) {
             if (language.equalsIgnoreCase("Eng")) {
                 while (read.hasNextLine()) {
@@ -143,7 +143,7 @@ public class TranslatorApp {
         return listOfWord;
     }
 
-    public static int enterANumber() {
+    public int enterANumber() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("What do you want to do?");
         System.out.println("1:Translate sentence from one language to another");
@@ -152,7 +152,7 @@ public class TranslatorApp {
         return choice;
     }
 
-    public static void makeAChoice() {
+    public void makeAChoice() {
         switch (enterANumber()) {
             case 1:
                 translateWholeSentence();
@@ -163,7 +163,7 @@ public class TranslatorApp {
         }
     }
 
-    public static ArrayList<String> putTextInArray(String file) {
+    public ArrayList<String> putTextInArray(String file) {
         int count = 0;
         ArrayList<String> array = new ArrayList<>();
         try (Scanner read = new Scanner(new FileReader(file))) {
@@ -180,7 +180,7 @@ public class TranslatorApp {
         return array;
     }
 
-    public static ArrayList<String> putTextInHashMap(String file) {
+    public ArrayList<String> putTextInHashMap(String file) {
         int count = 0;
         ArrayList<String> array = new ArrayList<>();
         try (Scanner read = new Scanner(new FileReader(file))) {
@@ -199,22 +199,24 @@ public class TranslatorApp {
         return array;
     }
 
-    public static ArrayList<String> translateText(ArrayList<String> arrayOfTextLines, ArrayList<String> reputArrayOfTextLines) {
+    public ArrayList<String> translateText(ArrayList<String> arrayOfTextLines,
+                                           ArrayList<String> reputArrayOfTextLines, TextTranslator translator, LanguageGuesser guesser, TranslatorApp app) {
         int count = 0;
         String text;
         ArrayList<String> listOfWords = new ArrayList<>();
         for (int x = 0; x < findSizeOfVocab(textFile); x++) {
-            firstLanguage = LanguageGuesser.languageDetection(arrayOfTextLines.get(x));
+            firstLanguage = guesser.languageDetection(arrayOfTextLines.get(x));
             System.out.println(arrayOfTextLines.get(x) + " " + firstLanguage);
             while (true) {
                 if (firstLanguage.equalsIgnoreCase("Eng")) {
-                    text = translateFromEnglish(arrayOfTextLines.get(x), reputArrayOfTextLines.get(x));
+                    text = translator.translateFromEnglish(arrayOfTextLines.get(x), reputArrayOfTextLines.get(x));
                     break;
                 } else if (reputArrayOfTextLines.get(x).equalsIgnoreCase("Eng")) {
-                    text = translateToEnglish(reputArrayOfTextLines.get(x), arrayOfTextLines.get(x));
+                    text = translator.translateToEnglish(reputArrayOfTextLines.get(x), arrayOfTextLines.get(x));
                     break;
                 } else {
-                    text = translateFromEnglish(translateToEnglish(firstLanguage, arrayOfTextLines.get(x)), reputArrayOfTextLines.get(x));
+                    text = translator.translateFromEnglish(translator.translateToEnglish
+                            (firstLanguage, arrayOfTextLines.get(x)), reputArrayOfTextLines.get(x));
                     break;
                 }
             }
@@ -225,7 +227,7 @@ public class TranslatorApp {
         return listOfWords;
     }
 
-    public static void putTranslatedTextInOutputFile(ArrayList<String> text) {
+    public void putTranslatedTextInOutputFile(ArrayList<String> text) {
         File file = new File(outputTextFile);
         try (FileWriter writer = new FileWriter(file)) {
             for (int x = 0; x < findSizeOfVocab(textFile); x++) {
@@ -237,15 +239,15 @@ public class TranslatorApp {
         }
     }
 
-    public static void translateFunction() {
-        putTranslatedTextInOutputFile(translateText(putTextInArray(textFile), putTextInHashMap(textFile)));
+    public void translateFunction() {
+        putTranslatedTextInOutputFile(translateText(putTextInArray(textFile), putTextInHashMap(textFile), txtTrans, guesser,appTranslator ));
     }
 
-    public static void translateWholeSentence() {
+    public void translateWholeSentence() {
         Scanner write = new Scanner(System.in);
         System.out.println("Enter sentence: ");
         String sentence = write.nextLine();
-        firstLanguage = LanguageGuesser.languageDetection(sentence);
+        firstLanguage = guesser.languageDetection(sentence);
         System.out.println("Detected language : " + firstLanguage);
         System.out.println("To which Language translate");
         String secondLanguage = write.nextLine();
@@ -255,17 +257,16 @@ public class TranslatorApp {
         }
         while (true) {
             if (firstLanguage.equalsIgnoreCase("Eng")) {
-                translateFromEnglish(sentence, secondLanguage);
+                txtTrans.translateFromEnglish(sentence, secondLanguage);
                 break;
             }
             if (secondLanguage.equalsIgnoreCase("Eng")) {
-                translateToEnglish(secondLanguage, sentence);
+                txtTrans.translateToEnglish(secondLanguage, sentence);
                 break;
             } else {
-                translateFromEnglish(translateToEnglish(firstLanguage, sentence), secondLanguage);
+                txtTrans.translateFromEnglish(txtTrans.translateToEnglish(firstLanguage, sentence), secondLanguage);
                 break;
             }
         }
     }
 }
-
