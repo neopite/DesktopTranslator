@@ -5,7 +5,7 @@ import static com.github.neophite.Translator.TranslatorApp.firstLanguage;
 import static com.github.neophite.Translator.TranslatorApp.DICTIONARY_LOAD_TO;
 
 public class TextTranslator {
-    public static String translateToEnglish(String lang, String sentence) {
+    public  String translateToEnglish(String lang, String sentence) {
         String str = "";
         switch (lang) {
             case "Eng":
@@ -22,7 +22,7 @@ public class TextTranslator {
         return str;
     }
 
-    public static String translateFromEnglish(String str, String lang) {
+    public  String translateFromEnglish(String str, String lang) {
         String words = "";
         try {
             for (String line : str.split(" ")) {
