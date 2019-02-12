@@ -8,11 +8,10 @@ import java.util.*;
 
 public class LanguageGuesser {
     private static ArrayList<ArrayList<String>> LIST = new ArrayList<>();
-    private static HashMap<Integer, String> LIST_OF_LANGUAGES = new HashMap<>();
+    private static ArrayList<String> LIST_OF_LANGUAGES = new ArrayList<>();
     private static HashMap<String, Integer> COUNT_OF_LANGUAGES = new HashMap<>();
 
-    LanguageGuesser(ArrayList<ArrayList<String>> LIST, HashMap<Integer,
-            String> LIST_OF_LANGUAGE, HashMap<String, Integer> COUNT_OF_LANGUAGES) {
+    LanguageGuesser(ArrayList<ArrayList<String>> LIST, ArrayList<String>LIST_OF_LANGUAGE, HashMap<String, Integer> COUNT_OF_LANGUAGES) {
         this.LIST = LIST;
         this.LIST_OF_LANGUAGES = LIST_OF_LANGUAGE;
         this.COUNT_OF_LANGUAGES = COUNT_OF_LANGUAGES;
@@ -54,7 +53,7 @@ public class LanguageGuesser {
      * @param list   - counter of each language in COUNT_OF_LANGUAGE.
      * @return update COUNT_OF_LANGUAGE.
      */
-    public HashMap<String, Integer> findLanguageForTranslation(HashMap<Integer, String> map, int number,
+    private HashMap<String, Integer> findLanguageForTranslation(ArrayList<String> map, int number,
                                                                HashMap<String, Integer> list) {
         for (int x = 0; x < LIST_OF_LANGUAGES.size(); x++) {
             if (map.get(number).contains(LIST_OF_LANGUAGES.get(x))) {

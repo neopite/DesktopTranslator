@@ -12,7 +12,6 @@ public class TextTranslator {
                 for (String words : sentence.split(" ")) {
                     str += DICTIONARY_LOAD.get(firstLanguage).get(words) + " ";
                 }
-                System.out.print(str);
                 break;
             default:
                 for (String words : sentence.split(" ")) {
@@ -24,15 +23,9 @@ public class TextTranslator {
 
     public  String translateFromEnglish(String str, String lang) {
         String words = "";
-        try {
             for (String line : str.split(" ")) {
-                System.out.print(DICTIONARY_LOAD_TO.get(lang).get(line) + " ");
                 words += DICTIONARY_LOAD_TO.get(lang).get(line) + " ";
             }
-        } catch (NullPointerException error) {
-            System.err.println("Language(" + lang + ")is not contained in dictionaries");
-            System.exit(-1);
-        }
         return words;
     }
 
