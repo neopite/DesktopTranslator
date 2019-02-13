@@ -133,6 +133,7 @@ public class TranslatorApp {
         System.out.println("What do you want to do?");
         System.out.println("1:Translate sentence from one language to another");
         System.out.println("2:Translate text and put translated text to another *.txt");
+        System.out.println("3:Write down a new language and continue work");
         int choice = scanner.nextInt();
         return choice;
     }
@@ -144,6 +145,9 @@ public class TranslatorApp {
                 break;
             case 2:
                 translateFunction();
+                break;
+            case 3:putNewLanguage();
+                makeAChoice();
                 break;
         }
     }
