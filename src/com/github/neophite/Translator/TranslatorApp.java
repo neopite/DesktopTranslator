@@ -30,17 +30,14 @@ public class TranslatorApp {
             delims.add(delimenters[ittter]);
         }
         int count=appTranslator.putTextInHashMaps("TextInput");
-        System.out.println(hashMapOfChars.size());
-        System.out.println(hashMapOfWords.size());
-        for (int itter = 0; itter < hashMapOfChars.size(); itter++) {
+        for (int itter = 0; itter < count; itter++) {
             if(hashMapOfChars.get(itter)!=null){
                 finalStr+=hashMapOfChars.get(itter);
-            } else if(hashMapOfWords.get(itter)!=null){
+            }else if(hashMapOfWords.get(itter)!=null){
                 finalStr+=hashMapOfWords.get(itter);
             }
         }
         System.out.println(finalStr);
-        System.out.println(count);
         //appTranslator.makeAChoice();
     }
 
@@ -182,7 +179,6 @@ public class TranslatorApp {
                 String line = read.nextLine();
                 String[] arrayOfWords = line.split("((?<=[-\\t,;.?!:@\\[\\](){}_*/\\s])|(?=[-\\t,;.?!:@\\[\\](){}_*/\\s]))"); //separator between language and sentence in TextInput.txt
                 for (int itter = 0; itter < arrayOfWords.length; itter++) {
-                    System.out.println(itterG);
                     if (delims.contains(arrayOfWords[itter])) {
                         hashMapOfChars.put(itter, arrayOfWords[itter]);
                     }else {
@@ -198,47 +194,7 @@ public class TranslatorApp {
         return count;
     }
 
-    public ArrayList<String> translateText(ArrayList<String> arrayOfTextLines,
-                                           ArrayList<String> reputArrayOfTextLines, TextTranslator translator, LanguageGuesser guesser, TranslatorApp app) {
-        int count = 0;
-        String text;
-        ArrayList<String> listOfWords = new ArrayList<>();
-        for (int x = 0; x < guesser.findSizeOfVocab(textFile); x++) {
-            firstLanguage = guesser.languageDetection(arrayOfTextLines.get(x));
-            while (true) {
-                if (firstLanguage.equalsIgnoreCase("Eng")) {
-                    text = translator.translateFromEnglish(arrayOfTextLines.get(x), reputArrayOfTextLines.get(x));
-                    System.out.println(text);
-                    break;
-                } else if (reputArrayOfTextLines.get(x).equalsIgnoreCase("Eng")) {
-                    text = translator.translateToEnglish(reputArrayOfTextLines.get(x), arrayOfTextLines.get(x));
-                    System.out.println(text);
-                    break;
-                } else {
-                    text = translator.translateFromEnglish(translator.translateToEnglish
-                            (firstLanguage, arrayOfTextLines.get(x)), reputArrayOfTextLines.get(x));
-                    System.out.println(text);
-                    break;
-                }
-            }
-            listOfWords.add(count, text);
-            count++;
-            System.out.println();
-        }
-        return listOfWords;
-    }
 
-    public void putTranslatedTextInOutputFile(ArrayList<String> text) {
-        File file = new File(outputTextFile);
-        try (FileWriter writer = new FileWriter(file)) {
-            for (int x = 0; x < guesser.findSizeOfVocab(textFile); x++) {
-                writer.write(text.get(x) + "\n");
-            }
-        } catch (IOException error) {
-            System.err.println("File" + file + "not found");
-            System.exit(-1);
-        }
-    }
 
    /* public void translateFunction() {
         putTranslatedTextInOutputFile(translateText(putTextInArray(textFile), putTextInHashMap(textFile), txtTrans, guesser, appTranslator));
