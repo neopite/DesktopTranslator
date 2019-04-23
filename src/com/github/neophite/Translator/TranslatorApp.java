@@ -6,21 +6,42 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class TranslatorApp {
-    public final static ArrayList<ArrayList<String>> LIST = new ArrayList<>();
-    public final static HashMap<String, Integer> COUNT_OF_LANGUAGES = new HashMap<>();
-    public final static ArrayList<String> LIST_OF_LANGUAGES = new ArrayList<>();
-    public final static HashMap<String, HashMap<String, String>> DICTIONARY_LOAD = new HashMap<>();
-    public final static HashMap<String, HashMap<String, String>> DICTIONARY_LOAD_TO = new HashMap<>();
-    public static String firstLanguage;
-    public static String outputTextFile = "TextOutput";
-    public static String textFile = "TextInput";
-    public static LanguageGuesser guesser = new LanguageGuesser(LIST, LIST_OF_LANGUAGES, COUNT_OF_LANGUAGES);
-    public static TranslatorApp appTranslator = new TranslatorApp();
-    public static TextTranslator txtTrans = new TextTranslator();
+    protected final static ArrayList<ArrayList<String>> LIST = new ArrayList<>();
+    private final static HashMap<String, Integer> COUNT_OF_LANGUAGES = new HashMap<>();
+    private final static ArrayList<String> LIST_OF_LANGUAGES = new ArrayList<>();
+    protected final static HashMap<String, HashMap<String, String>> DICTIONARY_LOAD = new HashMap<>();
+    protected final static HashMap<String, HashMap<String, String>> DICTIONARY_LOAD_TO = new HashMap<>();
+    protected static String firstLanguage;
+    private static String outputTextFile = "TextOutput";
+    private static String textFile = "TextInput";
+    private static LanguageGuesser guesser = new LanguageGuesser(LIST, LIST_OF_LANGUAGES, COUNT_OF_LANGUAGES);
+    private static TranslatorApp appTranslator = new TranslatorApp();
+    private static TextTranslator txtTrans = new TextTranslator();
+    private static HashMap<Integer,String> hashMapOfWords = new HashMap<>();
+    private static HashMap<Integer,String> hashMapOfChars = new HashMap<>();
+    private static String[] delimenters = {",", ";", ".", "?", "!", ":", "@", "(", ")", "{", "}", "*", "/", " "};
+    private static ArrayList<String> delims = new ArrayList<>();
 
     public static void main(String[] args) {
+
+        String finalStr="";
         appTranslator.putVocabularsAndDictionary();
-        appTranslator.makeAChoice();
+        for (int ittter = 0; ittter < delimenters.length; ittter++) {
+            delims.add(delimenters[ittter]);
+        }
+        int count=appTranslator.putTextInHashMaps("TextInput");
+        System.out.println(hashMapOfChars.size());
+        System.out.println(hashMapOfWords.size());
+        for (int itter = 0; itter < hashMapOfChars.size(); itter++) {
+            if(hashMapOfChars.get(itter)!=null){
+                finalStr+=hashMapOfChars.get(itter);
+            } else if(hashMapOfWords.get(itter)!=null){
+                finalStr+=hashMapOfWords.get(itter);
+            }
+        }
+        System.out.println(finalStr);
+        System.out.println(count);
+        //appTranslator.makeAChoice();
     }
 
     public void putVocabularsAndDictionary() {
@@ -143,9 +164,9 @@ public class TranslatorApp {
             case 1:
                 translateWholeSentence();
                 break;
-            case 2:
+            /*case 2:
                 translateFunction();
-                break;
+                break;*/
             case 3:
                 putNewLanguage();
                 makeAChoice();
@@ -153,40 +174,28 @@ public class TranslatorApp {
         }
     }
 
-    public ArrayList<String> putTextInArray(String file) {
+    public int putTextInHashMaps(String file) {
         int count = 0;
         ArrayList<String> array = new ArrayList<>();
         try (Scanner read = new Scanner(new FileReader(file))) {
             while (read.hasNextLine()) {
                 String line = read.nextLine();
-                String[] arrayOfWords = line.split(";"); //separator between language and sentence in TextInput.txt
-                array.add(count, arrayOfWords[1]);
-                count++;
+                String[] arrayOfWords = line.split("((?<=[-\\t,;.?!:@\\[\\](){}_*/\\s])|(?=[-\\t,;.?!:@\\[\\](){}_*/\\s]))"); //separator between language and sentence in TextInput.txt
+                for (int itter = 0; itter < arrayOfWords.length; itter++) {
+                    System.out.println(itterG);
+                    if (delims.contains(arrayOfWords[itter])) {
+                        hashMapOfChars.put(itter, arrayOfWords[itter]);
+                    }else {
+                        hashMapOfWords.put(itter,arrayOfWords[itter]);
+                    }
+                    count++;
+                }
             }
         } catch (FileNotFoundException error) {
             System.err.println("File" + file + "not found,please try again");
             System.exit(-1);
         }
-        return array;
-    }
-
-    public ArrayList<String> putTextInHashMap(String file) {
-        int count = 0;
-        ArrayList<String> array = new ArrayList<>();
-        try (Scanner read = new Scanner(new FileReader(file))) {
-            while (read.hasNextLine()) {
-                String line = read.nextLine();
-                String[] arrayOfWords = line.split(";"); // separator between language of translate and
-                // line which need to translate
-                array.add(count, arrayOfWords[0]);
-                count++;
-            }
-        } catch (FileNotFoundException error) {
-            System.err.println("File" + file + "not found,please try again");
-            System.exit(-1);
-        }
-
-        return array;
+        return count;
     }
 
     public ArrayList<String> translateText(ArrayList<String> arrayOfTextLines,
@@ -231,9 +240,9 @@ public class TranslatorApp {
         }
     }
 
-    public void translateFunction() {
+   /* public void translateFunction() {
         putTranslatedTextInOutputFile(translateText(putTextInArray(textFile), putTextInHashMap(textFile), txtTrans, guesser, appTranslator));
-    }
+    }*/
 
     public void translateWholeSentence() {
         Scanner write = new Scanner(System.in);
@@ -257,7 +266,7 @@ public class TranslatorApp {
                 break;
             } else {
                 System.out.println(txtTrans.translateFromEnglish(txtTrans
-                                                  .translateToEnglish(firstLanguage, sentence), secondLanguage));
+                        .translateToEnglish(firstLanguage, sentence), secondLanguage));
                 break;
             }
         }
