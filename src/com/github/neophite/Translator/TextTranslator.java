@@ -4,7 +4,6 @@ import static com.github.neophite.Translator.TranslatorApp.*;
 
 public class TextTranslator {
     public String translateToEnglish(String lang, String sentence) {
-        int count = 0;
         String word = "";
         String str = "";
         switch (lang) {
@@ -57,6 +56,7 @@ public class TextTranslator {
 
     /**
      * Method verifies the current word for existence in dictionaries.
+     *
      * @param words - current input word.
      * @return if word exist in dictionary(return word),if word doesn`t exist (return empty word).
      */

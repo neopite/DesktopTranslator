@@ -69,7 +69,7 @@ public class LanguageGuesser {
         File file = new File(language);
         try (Scanner read = new Scanner(new FileReader(file))) {
             while (read.hasNext()) {
-                String line = read.nextLine();
+                read.nextLine();
                 count++;
             }
         } catch (FileNotFoundException error) {
@@ -78,4 +78,4 @@ public class LanguageGuesser {
         }
         return count;
     }
-}
+ }

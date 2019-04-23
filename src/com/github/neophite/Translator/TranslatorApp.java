@@ -8,13 +8,13 @@ import java.util.Scanner;
 public class TranslatorApp {
     public final static ArrayList<ArrayList<String>> LIST = new ArrayList<>();
     public final static HashMap<String, Integer> COUNT_OF_LANGUAGES = new HashMap<>();
-    public final static ArrayList<String>LIST_OF_LANGUAGES = new ArrayList<>();
+    public final static ArrayList<String> LIST_OF_LANGUAGES = new ArrayList<>();
     public final static HashMap<String, HashMap<String, String>> DICTIONARY_LOAD = new HashMap<>();
     public final static HashMap<String, HashMap<String, String>> DICTIONARY_LOAD_TO = new HashMap<>();
     public static String firstLanguage;
     public static String outputTextFile = "TextOutput";
     public static String textFile = "TextInput";
-    public static LanguageGuesser guesser = new LanguageGuesser(LIST,LIST_OF_LANGUAGES,COUNT_OF_LANGUAGES);
+    public static LanguageGuesser guesser = new LanguageGuesser(LIST, LIST_OF_LANGUAGES, COUNT_OF_LANGUAGES);
     public static TranslatorApp appTranslator = new TranslatorApp();
     public static TextTranslator txtTrans = new TextTranslator();
 
@@ -146,7 +146,8 @@ public class TranslatorApp {
             case 2:
                 translateFunction();
                 break;
-            case 3:putNewLanguage();
+            case 3:
+                putNewLanguage();
                 makeAChoice();
                 break;
         }
@@ -231,7 +232,7 @@ public class TranslatorApp {
     }
 
     public void translateFunction() {
-        putTranslatedTextInOutputFile(translateText(putTextInArray(textFile), putTextInHashMap(textFile), txtTrans, guesser,appTranslator ));
+        putTranslatedTextInOutputFile(translateText(putTextInArray(textFile), putTextInHashMap(textFile), txtTrans, guesser, appTranslator));
     }
 
     public void translateWholeSentence() {
@@ -255,7 +256,8 @@ public class TranslatorApp {
                 System.out.println(txtTrans.translateToEnglish(secondLanguage, sentence));
                 break;
             } else {
-                System.out.println(txtTrans.translateFromEnglish(txtTrans.translateToEnglish(firstLanguage, sentence), secondLanguage));
+                System.out.println(txtTrans.translateFromEnglish(txtTrans
+                                                  .translateToEnglish(firstLanguage, sentence), secondLanguage));
                 break;
             }
         }
